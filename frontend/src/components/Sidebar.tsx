@@ -1,19 +1,12 @@
-// src/components/Sidebar.tsx
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import {
   MessageSquare,
@@ -21,49 +14,41 @@ import {
   MoreHorizontal,
   Trash,
   Pencil,
-  PanelLeftClose,
-  PanelLeftOpen,
   Search,
   AlignJustify,
 } from 'lucide-react';
 import { useState } from 'react';
+import { sessionSelect, useAppDispatch, useAppSelector } from '../store';
+import { Link, useNavigate } from 'react-router-dom';
+import { setCurrentSession } from '../store/SessionSlice';
 
-// Define the shape of a chat session for type safety
-interface ChatSession {
-  id: string;
-  title: string;
-}
-
-// Define the props the Sidebar component will accept
 interface SidebarProps {
   isCollapsed: boolean;
-  activeChatId: string | null;
-  chatHistory: ChatSession[];
-  onNewChat: () => void;
-  onSelectChat: (id: string) => void;
   onToggleCollapse: () => void;
-  onRenameChat: (id: string, newTitle: string) => void;
-  onDeleteChat: (id: string) => void;
 }
 
-function Sidebar({
-  isCollapsed,
-  activeChatId,
-  chatHistory,
-  onNewChat,
-  onSelectChat,
-  onToggleCollapse,
-  onRenameChat,
-  onDeleteChat,
-}: SidebarProps) {
-  const handleRename = (id: string) => {
-    const newTitle = prompt('Enter new chat title:');
-    if (newTitle) {
-      onRenameChat(id, newTitle);
+function Sidebar({ isCollapsed, onToggleCollapse }: SidebarProps) {
+  const handleRename = (id: string) => {};
+
+  const [hoverCollapse, setHoverCollapse] = useState(true);
+  const { sessions, activeSession } = useAppSelector(sessionSelect);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const onSelectChat = (e: React.MouseEvent<HTMLDivElement>) => {
+    const id = e.currentTarget.dataset.sessionid;
+    if (id) {
+      dispatch(setCurrentSession(id));
+      navigate(`/app/${id}`);
     }
   };
 
-  const [hoverCollapse, setHoverCollapse] = useState(true);
+  const onNewChat = () => {
+    dispatch(setCurrentSession(''));
+    navigate(`/app`);
+  };
+
+  const onDeleteChat = (id: string) => {};
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -75,7 +60,6 @@ function Sidebar({
           'hidden md:flex flex-col bg-muted/50 transition-all duration-300 ease-in-out p-4',
           isCollapsed && hoverCollapse ? 'w-18' : 'w-64'
         )}>
-        {/* Header with Search and Collapse Toggle */}
         <div className={cn('flex items-center py-4 gap-2 justify-between')}>
           <Button
             onClick={() => {
@@ -91,7 +75,9 @@ function Sidebar({
             <AlignJustify className="h-5 w-5" />
           </Button>
           {(!isCollapsed || !hoverCollapse) && (
-            <Search className=" h-4 w-4 text-muted-foreground" />
+            <Link to="/search">
+              <Search className=" h-4 w-4 text-muted-foreground" />
+            </Link>
           )}
         </div>
 
@@ -102,13 +88,11 @@ function Sidebar({
               setHoverCollapse(false);
             }
           }}>
-          {/* New Chat Button */}
           <Button onClick={onNewChat} className="w-full justify-start gap-2">
             <Plus className="h-5 w-5" />
             {(!isCollapsed || !hoverCollapse) && 'New Chat'}
           </Button>
 
-          {/* Chat History */}
           {(!isCollapsed || !hoverCollapse) && (
             <div className="flex-grow mt-4">
               <h2 className="text-sm font-semibold text-muted-foreground">
@@ -116,21 +100,21 @@ function Sidebar({
               </h2>
               <ScrollArea className="h-[calc(100vh-200px)]">
                 <div className="space-y-1">
-                  {chatHistory.map((session) => (
+                  {sessions.map((session) => (
                     <div
                       key={session.id}
+                      data-sessionid={session.id}
                       className={cn(
                         'justify-start gap-2 truncate flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground cursor-pointer',
-                        activeChatId === session.id &&
+                        activeSession === session.id &&
                           'bg-accent text-accent-foreground'
                       )}
-                      onClick={() => onSelectChat(session.id)}>
+                      onClick={onSelectChat}>
                       <MessageSquare className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate flex-grow ">
                         {session.title}
                       </span>
 
-                      {/* More Options Menu */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
