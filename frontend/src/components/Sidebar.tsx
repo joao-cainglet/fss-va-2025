@@ -118,6 +118,7 @@ function Sidebar({
                 <div className="space-y-1">
                   {chatHistory.map((session) => (
                     <div
+                      key={session.id}
                       className={cn(
                         'justify-start gap-2 truncate flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground cursor-pointer',
                         activeChatId === session.id &&

@@ -16,7 +16,7 @@ function ChatHistory({ messages }: ChatHistoryProps) {
   ];
 
   return (
-    <ScrollArea className=" h-[80vh] flex-grow px-4 pt-4">
+    <ScrollArea className=" h-[70vh] flex-grow px-4 pt-4">
       <div className="max-w-4xl mx-auto w-full">
         {messages.length === 0 ? (
           <div className="flex flex-col items-start gap-4">

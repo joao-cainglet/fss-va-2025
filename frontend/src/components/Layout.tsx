@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-import ChatPanel from './ChatPanel';
+import { Outlet } from 'react-router-dom';
 
 // Mock data for chat history
 const initialChatHistory = [
@@ -61,7 +61,7 @@ function Layout() {
       />
       <main className="flex-1 flex flex-col">
         {/* The ChatPanel would also need the activeChatId to load messages */}
-        <ChatPanel key={activeChatId} />
+        <Outlet />
       </main>
     </div>
   );

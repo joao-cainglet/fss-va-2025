@@ -1,7 +1,7 @@
 // src/components/ChatPanel.tsx
 import { useState } from 'react';
-import ChatHistory from './ChatHistory';
-import PromptInput from './PromptInput';
+import ChatHistory from '../components/ChatHistory';
+import PromptInput from '../components/PromptInput';
 import type { Message } from '../types'; // We will create this type definition
 
 function ChatPanel() {
