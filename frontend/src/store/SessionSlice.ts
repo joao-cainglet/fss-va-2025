@@ -1,31 +1,25 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import type { ChatSession, SessionState } from '../types';
+import client from '../api/client';
 
-
-const recentSearches: ChatSession[] = [
-    { id: '1', title: 'Initial Greeting and Assistance Offered', date: 'Today', intent: 'regulatory' },
-    { id: '2', title: 'Simple Greeting and Response', date: 'Today', intent: 'regulatory' },
-    {
-        id: '3',
-        title: 'FastAPI and Azure Cosmos DB Integration',
-        date: 'Yesterday',
-        intent: 'speech'
-    },
-    { id: '4', title: 'React Code Generation Agent Methods', date: 'Jul 16', intent: 'internal' },
-];
 
 const initialState: SessionState = {
-    sessions: recentSearches,
+    sessions: [],
     activeSession: "",
 };
+
+export const fetchAllSessionsThunk = createAsyncThunk(
+    'session/fetchAllSessions',
+    async () => {
+        const response = await client.get('/sessions');
+        return response.data as ChatSession[];
+    }
+);
 
 const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
-        addSession: (state: SessionState, action: PayloadAction<ChatSession>) => {
-            state.sessions.push(action.payload);
-        },
         setCurrentSession: (state: SessionState, action: PayloadAction<string>) => {
             state.activeSession = action.payload;
         },
@@ -45,7 +39,20 @@ const sessionSlice = createSlice({
             }
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchAllSessionsThunk.pending, (state) => {
+                // Optional: Add loading state handling here
+            })
+            .addCase(fetchAllSessionsThunk.fulfilled, (state, action) => {
+                state.sessions = action.payload;
+            })
+            .addCase(fetchAllSessionsThunk.rejected, (state, action) => {
+                // Optional: Add error state handling here
+                console.error('Failed to fetch sessions:', action.error);
+            });
+    },
 });
 
-export const { addSession, setCurrentSession, removeSession, updateSession } = sessionSlice.actions;
+export const { setCurrentSession, removeSession, updateSession } = sessionSlice.actions;
 export default sessionSlice.reducer;

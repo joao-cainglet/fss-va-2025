@@ -1,15 +1,14 @@
 // src/types.ts
 export interface Message {
-    id: string;
-    sender: 'user' | 'bot';
-    text: string;
+    role: 'user' | 'assistant';
+    content: string;
 }
 
 
 export interface ChatSession {
     id: string;
     title: string;
-    date: string;
+    created_at: string;
     intent: string;
 }
 
