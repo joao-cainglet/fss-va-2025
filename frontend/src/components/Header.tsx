@@ -1,12 +1,14 @@
 import { ModeToggle } from './ToggleTheme';
 import { TypographyH1 } from './ui/typography';
+import { UserNav } from './UserNav';
 
 function Header() {
   return (
-    <header className=" px-4 py-3 sticky top-0 shadow-md dark:bg-slate-800 bg-slate-100 z-10 flex items-center justify-between">
-      <TypographyH1 text="BSP AI" className=" text-lg" />
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background px-4">
+      <TypographyH1 text="FSS AI" className="text-lg font-semibold" />
       <div className="flex items-center gap-4">
         <ModeToggle />
+        <UserNav />
       </div>
     </header>
   );

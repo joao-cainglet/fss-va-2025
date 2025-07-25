@@ -5,26 +5,34 @@ import ChatMessage from './ChatMessage';
 import TypingLoader from './TypingLoader';
 import type { Message as MessageType } from '../types';
 import { Card, CardContent } from '@/components/ui/card';
-import { Lightbulb, Code } from 'lucide-react';
+import { Lightbulb, Code, Mic, BookText, Building } from 'lucide-react';
+import { CardHeader, CardTitle } from './ui/card';
 
 interface ChatHistoryProps {
   messages: MessageType[];
   streamingResponse: string;
   isLoading: boolean;
-  onSuggestionClick: (suggestion: string) => void;
+  onSuggestionClick: (suggestion: string, intent: string) => void;
 }
 
 const suggestionCards = [
   {
-    icon: <Lightbulb size={24} />,
-    text: 'What are the current market trends in tech stocks?',
+    icon: <BookText className="h-6 w-6 text-primary" />,
+    title: 'Regulatory Search',
+    text: 'Summarize the key changes in the latest circular on digital banking.',
     intent: 'Regulatory',
   },
-
   {
-    icon: <Lightbulb size={24} />,
-    text: 'Explain recent developments in financial markets',
-    intent: 'Regulatory',
+    icon: <Mic className="h-6 w-6 text-primary" />,
+    title: 'Speechwriting Support',
+    text: 'Draft opening remarks for a speech on financial stability.',
+    intent: 'Speech',
+  },
+  {
+    icon: <Building className="h-6 w-6 text-primary" />,
+    title: 'Internal Knowledge',
+    text: 'What are the guidelines for conducting a risk assessment?',
+    intent: 'Internal',
   },
 ];
 
@@ -45,23 +53,41 @@ function ChatHistory({
       <div className="max-w-4xl mx-auto w-full">
         {messages.length === 0 && !isLoading ? (
           // --- Welcome Screen with Suggestions ---
-          <div className="flex flex-col items-start gap-4">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
-              Hello, User
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              How can I help you today?
+          <div className="flex flex-col items-center text-center gap-4">
+            <div className="flex items-center gap-3">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M24 4C12.96 4 4 12.96 4 24C4 35.04 12.96 44 24 44C35.04 44 44 35.04 44 24C44 12.96 35.04 4 24 4ZM24 36C17.38 36 12 30.62 12 24S17.38 12 24 12C30.62 12 36 17.38 36 24S30.62 36 24 36Z"
+                  fill="hsl(var(--primary))"
+                />
+              </svg>
+              <h1 className="text-3xl font-bold">FSS Virtual Assistant</h1>
+            </div>
+            <p className="text-muted-foreground text-lg max-w-2xl">
+              Your AI-powered assistant for regulatory insights, speechwriting,
+              and internal knowledge.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4">
-              {suggestionCards.map((card, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-6">
+              {suggestionCards.map((card) => (
                 <Card
-                  key={i}
-                  className="p-4 hover:bg-muted cursor-pointer transition-colors"
-                  onClick={() => onSuggestionClick(card.text)} // Make cards clickable
-                >
-                  <CardContent className="flex items-center gap-4 p-0">
-                    {card.icon}
-                    <p className="font-medium">{card.text}</p>
+                  key={card.title}
+                  className="p-4 hover:bg-muted cursor-pointer transition-colors text-left"
+                  onClick={() => onSuggestionClick(card.text, card.intent)}>
+                  <CardHeader className="p-2">
+                    <div className="flex items-center gap-3">
+                      {card.icon}
+                      <CardTitle className="text-base font-semibold">
+                        {card.title}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-2">
+                    <p className="text-sm text-muted-foreground">{card.text}</p>
                   </CardContent>
                 </Card>
               ))}

@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import {
+  type TypedUseSelectorHook,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import sessionReducer from './SessionSlice';
 
 const store = configureStore({
-    reducer: {
-        session: sessionReducer,
-    },
+  reducer: {
+    session: sessionReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

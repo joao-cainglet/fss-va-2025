@@ -77,7 +77,7 @@ function ChatPanel() {
     }
   }, [isLoading]);
 
-  const handleSendMessage = async (query: string) => {
+  const handleSendMessage = async (query: string, _intent?: string) => {
     if (!query || isLoading) return;
 
     setIsLoading(true);
@@ -95,7 +95,7 @@ function ChatPanel() {
       if (!currentSessionId) {
         const response = await client.post('/sessions', {
           title: query,
-          intent,
+          intent: _intent || intent,
         });
         const newId = response.data.id;
 
@@ -153,6 +153,11 @@ function ChatPanel() {
     }
   };
 
+  const handleSuggestionClick = (suggestion: string, intent: string) => {
+    setIntent(intent);
+    handleSendMessage(suggestion, intent);
+  };
+
   const fetchMessages = async () => {
     if (!sessionId) return;
     try {
@@ -171,19 +176,18 @@ function ChatPanel() {
 
   useEffect(() => {
     const chatId = window.location.pathname.split('/').pop();
-    console.log('Chat ID from URL:', chatId);
     if (chatId && chatId !== 'app') {
       setSessionId(chatId);
     } else setSessionId(null);
   }, [window.location.pathname]);
 
   useEffect(() => {
-    console.log('Session ID:', sessionId);
     if (sessionId && !isLoading) {
       fetchMessages();
     }
     if (!sessionId) {
       setMessages([]);
+      setIntent('Regulatory');
     }
   }, [sessionId]);
 
@@ -193,7 +197,7 @@ function ChatPanel() {
         isLoading={isLoading}
         messages={messages}
         streamingResponse={streamingResponse}
-        onSuggestionClick={handleSendMessage}
+        onSuggestionClick={handleSuggestionClick}
       />
       <PromptInput
         onSendMessage={handleSendMessage}
