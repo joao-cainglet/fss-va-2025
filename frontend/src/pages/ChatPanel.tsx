@@ -160,6 +160,7 @@ function ChatPanel() {
       if (response.data && response.data.messages) {
         setMessages(response.data.messages);
         setIntent(response.data.intent);
+        dispatch(setCurrentSession(sessionId));
       } else {
         console.error('No messages found for this session.');
       }

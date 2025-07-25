@@ -27,7 +27,7 @@ function ConfirmNewChatDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Start a new chat?</AlertDialogTitle>
           <AlertDialogDescription>
-            Selecting this tool will start a new chat. You can return to this
+            Selecting this option will start a new chat. You can return to this
             conversation at any time.
           </AlertDialogDescription>
         </AlertDialogHeader>

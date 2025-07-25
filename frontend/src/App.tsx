@@ -12,13 +12,15 @@ function App() {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Layout />}>
+            <Route path="/">
               <Route index element={<Navigate to="/app" replace />} />
-              <Route path="app">
-                <Route index element={<ChatPanel />} />
-                <Route path=":chatId" element={<ChatPanel />} />
+              <Route element={<Layout></Layout>}>
+                <Route path="app">
+                  <Route index element={<ChatPanel />} />
+                  <Route path=":chatId" element={<ChatPanel />} />
+                </Route>
+                <Route path="search" element={<SearchConvos />} />
               </Route>
-              <Route path="search" element={<SearchConvos />} />
             </Route>
           </Routes>
         </BrowserRouter>
